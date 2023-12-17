@@ -1,0 +1,46 @@
+﻿<FluentDesignTheme @bind-Mode="@_mode"
+                   OfficeColor="@_officeColor"
+                   OfficeColorChanged="@(e => { _officeColor = e ?? OfficeColor.Default; StateHasChanged(); })"
+                   StorageName="theme" />
+
+<FluentIcon Id="themeSelector" 
+            Value="@(new Icons.Filled.Size20.Settings())" 
+            Color="@Color.Fill"
+            OnClick="@ShowOrHideThemeSelector" />
+
+<FluentPopover Style="width: 300px;" AnchorId="themeSelector" @bind-Open="_visible">
+    <Header>
+        <FluentLabel Typo="Typography.PaneHeader">
+            Theme Selector
+        </FluentLabel>
+    </Header>
+    <Body>
+        <FluentStack Orientation="Orientation.Vertical" Width="300">
+            <FluentSelect Items="@(Enum.GetValues<DesignThemeModes>())"
+                          @bind-SelectedOption="@_mode" />
+                    
+            <FluentSelect Items="@(Enum.GetValues<OfficeColor>())"
+                          Height="200px"
+                          @bind-SelectedOption="@_officeColor">
+                <OptionTemplate>  
+                    <FluentStack>
+                        <FluentIcon Value="@(new Icons.Filled.Size20.RectangleLandscape())"
+                                    Color="Color.Custom"
+                                    CustomColor="@context.ToAttributeValue()" />
+                        <FluentLabel>@context</FluentLabel>  
+                    </FluentStack>
+                </OptionTemplate> 
+            </FluentSelect>
+        </FluentStack>
+    </Body>
+</FluentPopover>
+
+@code
+{
+    DesignThemeModes _mode = DesignThemeModes.System;
+    OfficeColor _officeColor = OfficeColor.Default;
+    bool _visible = false;
+    
+    void ShowOrHideThemeSelector()
+        => _visible = !_visible;
+}

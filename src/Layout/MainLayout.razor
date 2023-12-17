@@ -1,16 +1,26 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
+
+<FluentToastProvider Position="ToastPosition.BottomCenter" />
+<FluentDialogProvider />
+<FluentTooltipProvider />
+<FluentMessageBarProvider />
+
+<FluentLayout Style="margin-top: 10px;">
+    <FluentHeader>
+        MacGyver's Swiss Army Knife
+        <FluentSpacer />
+        <ThemeSelector />
+    </FluentHeader>
+    
+    <FluentStack Orientation="Orientation.Horizontal" Width="100%">
         <NavMenu/>
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
+        <FluentBodyContent Style="padding: 10px">
             @Body
-        </article>
-    </main>
-</div>
+        </FluentBodyContent>
+    </FluentStack>
+</FluentLayout>
+
+@code
+{
+    
+}
