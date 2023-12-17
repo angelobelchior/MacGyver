@@ -1,6 +1,6 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacGyver", "MacGyver\MacGyver.csproj", "{A3F5713A-63C4-4C2A-954B-78681E9405E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacGyver", "src\MacGyver.csproj", "{A3F5713A-63C4-4C2A-954B-78681E9405E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
