@@ -23,6 +23,10 @@
             <circle r="40%" cx="50%" cy="50%" />
         </svg>
         <div class="loading-progress-text"></div>
+        
+        <center>
+            <img src="favicon.jpg" alt="Image" height="500" width="500" />
+        </center>
     </div>
 
     <div id="blazor-error-ui">
@@ -47,12 +51,14 @@
             URL.revokeObjectURL(url);
         }
 
-        window.copyToClipboard = (text) => {
-            navigator.clipboard.writeText(text).then(function () {
-                alert("Copied to clipboard!");
-            }).catch(function (error) {
-                alert(error);
-            });
+        window.copyToClipboard = async (text) => {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (error) {
+                console.log(error);
+                return false;
+            }
         };
     </script>
 </body>

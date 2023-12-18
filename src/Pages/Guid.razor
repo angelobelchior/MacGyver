@@ -1,6 +1,7 @@
 ﻿@page "/guid"
 
 @inject IJSRuntime Js
+@inject IToastService ToastService
 
 <PageTitle>Guid Generator</PageTitle>
 
@@ -82,6 +83,16 @@
         string Upper(string value) => _upper ? value.ToUpper() : value;
         string Hyphens(string value) => _hyphens ? value : value.Replace("-", "");
     }
-    
-    async Task CopyToClipboard() => await Js.InvokeVoidAsync("copyToClipboard", _values);
+
+    async Task CopyToClipboard()
+    {
+        var result = await Js.InvokeAsync<bool>("copyToClipboard", _values);
+        if (result)
+        {
+            ToastService.ShowSuccess(
+                "Copied to clipboard!",
+                3000
+            );
+        }
+    }
 }
