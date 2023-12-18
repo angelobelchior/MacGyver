@@ -16,7 +16,7 @@
         <FluentTextArea Style="width: 100%;" @bind-Value="_content">
             <FluentLabel>Content</FluentLabel>
         </FluentTextArea>
-        <FluentNumberField Style="width: 100%;" @bind-Value="_size">
+        <FluentNumberField Style="width: 100%;" @bind-Value="_size" Max="1024" Min="5">
             <FluentLabel>Size</FluentLabel>
         </FluentNumberField>
         
@@ -24,7 +24,7 @@
         
     </FluentStack>
     
-    <FluentDivider Style="width: 100%;" Orientation=Orientation.Horizontal Role="@DividerRole.Separator"></FluentDivider>
+    <FluentDivider Style="width: 100%;" Orientation="Orientation.Horizontal" Role="@DividerRole.Separator"></FluentDivider>
     
     <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Center" Style="width: 100%;">
         @if (!string.IsNullOrEmpty(_image))

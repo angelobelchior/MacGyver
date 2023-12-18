@@ -1,0 +1,87 @@
+﻿@page "/guid"
+
+@inject IJSRuntime Js
+
+<PageTitle>Guid Generator</PageTitle>
+
+<h1>Guid Generator</h1>
+
+<FluentStack Orientation="Orientation.Vertical">
+    
+    <FluentStack Orientation="Orientation.Vertical" Style="width: 50%;">
+        <FluentNumberField Style="width: 100%;" @bind-Value="_max" Max="1000" Min="1">
+            <FluentLabel>How Many?</FluentLabel>
+        </FluentNumberField>
+        
+        <FluentStack Orientation="Orientation.Horizontal" Style="width: 100%;">
+            <FluentCheckbox @bind-Value="@_hyphens" Label="Hyphens"/>
+            <FluentCheckbox @bind-Value="@_upper" Label="Upper case"/>
+            <FluentCheckbox @bind-Value="@_braces" Label="Braces"/>
+        </FluentStack>
+        
+        <FluentRadioGroup Name="separators" @bind-Value="_quotes">
+            <FluentRadio Value=@(" ")>No Quotes</FluentRadio>
+            <FluentRadio Value=@("\"")>Double Quotes</FluentRadio>
+            <FluentRadio Value=@("'")>Single Quote</FluentRadio>
+        </FluentRadioGroup>
+
+        @if (_max > 1)
+        {
+            <FluentRadioGroup Name="separators" @bind-Value="_separator">
+                <FluentRadio Value=@("\n")>New Line</FluentRadio>
+                <FluentRadio Value=@(",")>Commas</FluentRadio>
+                <FluentRadio Value=@(";")>Semicolon</FluentRadio>
+            </FluentRadioGroup>
+        }
+
+        <FluentButton IconStart="@(new Icons.Regular.Size20.NumberSymbol())" @onclick="GenerateGuids">Generate</FluentButton>
+
+        <FluentDivider Style="width: 100%;" Orientation="Orientation.Horizontal" Role="@DividerRole.Separator"/>
+
+        @if (!string.IsNullOrWhiteSpace(_values))
+        {
+            <FluentTextArea Name="textArea" 
+                            Rows="10"
+                            Style="width: 100%;" 
+                            @bind-Value="_values" 
+                            Resize="TextAreaResize.Vertical"
+                            ReadOnly="true">
+                <FluentLabel>Values</FluentLabel>
+            </FluentTextArea>
+            <FluentButton IconStart="@(new Icons.Regular.Size20.Clipboard())" 
+                          Appearance="Appearance.Accent"
+                          OnClick="@CopyToClipboard">
+                Copy to Clipboard
+            </FluentButton>
+        }
+    </FluentStack>
+</FluentStack>
+
+@code
+{
+    int _max = 1;
+    
+    bool _hyphens = true;
+    bool _upper = false;
+    bool _braces = false;
+    string _quotes = " ";
+    
+    string _separator = "\n";
+    string _values = string.Empty;
+
+    void GenerateGuids()
+    {
+        var items = Enumerable.Range(0, _max)
+                                              .Select(_ => Format(System.Guid.NewGuid().ToString()!));
+        _values = string.Join(_separator, items);
+        return;
+
+        string Format(string value) => Hyphens(Upper(Quotes(Braces(value))));
+        string Quotes(string value) => $"{_quotes}{value}{_quotes}".Trim();
+        string Braces(string value) => _braces ? $"{{{value}}}" : value;
+        string Upper(string value) => _upper ? value.ToUpper() : value;
+        string Hyphens(string value) => _hyphens ? value : value.Replace("-", "");
+    }
+    
+    async Task CopyToClipboard() => await Js.InvokeVoidAsync("copyToClipboard", _values);
+}

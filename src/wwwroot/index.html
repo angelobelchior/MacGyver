@@ -46,6 +46,14 @@
             anchorElement.remove();
             URL.revokeObjectURL(url);
         }
+
+        window.copyToClipboard = (text) => {
+            navigator.clipboard.writeText(text).then(function () {
+                alert("Copied to clipboard!");
+            }).catch(function (error) {
+                alert(error);
+            });
+        };
     </script>
 </body>
 
