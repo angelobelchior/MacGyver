@@ -1,10 +1,5 @@
-﻿@page "/qrcode"
-
-@inject IJSRuntime Js
-@inject IToastService ToastService
-
-@using ZXing;
-@using ZXing.SkiaSharp;
+﻿@inherits QrCodeBehind
+@page "/qrcode"
 
 <PageTitle>QR Code Generator</PageTitle>
 
@@ -13,10 +8,10 @@
 <FluentStack Orientation="Orientation.Vertical">
     
     <FluentStack Orientation="Orientation.Vertical" Style="width: 30%;">
-        <FluentTextArea Style="width: 100%;" @bind-Value="_content">
+        <FluentTextArea Style="width: 100%;" @bind-Value="Content">
             <FluentLabel>Content</FluentLabel>
         </FluentTextArea>
-        <FluentNumberField Style="width: 100%;" @bind-Value="_size" Max="1024" Min="5">
+        <FluentNumberField Style="width: 100%;" @bind-Value="Size" Max="1024" Min="5">
             <FluentLabel>Size</FluentLabel>
         </FluentNumberField>
         
@@ -27,60 +22,9 @@
     <FluentDivider Style="width: 100%;" Orientation="Orientation.Horizontal" Role="@DividerRole.Separator"></FluentDivider>
     
     <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Center" Style="width: 100%;">
-        @if (!string.IsNullOrEmpty(_image))
+        @if (!string.IsNullOrEmpty(Image))
         {
-            <img src="@_image" style="cursor: pointer" alt="qrcode" @onclick="DownloadQrCodeImage"/>
+            <img src="@Image" style="cursor: pointer" alt="qrcode" @onclick="DownloadQrCodeImage"/>
         }
     </FluentStack>
 </FluentStack>
-
-@code {
-    int _size = 300;
-    string _content = "https://dev.to/angelobelchior";
-    string _image = string.Empty;
-    string _base64 = string.Empty;
-
-    private void GenerateQrCode()
-    {
-        if(string.IsNullOrEmpty(_content))
-        {
-            ToastService.ShowError(
-                "Invalid content...",
-                3000
-            );
-            return;
-        }
-        if(_size <= 0) _size = 300;
-
-        var barcodeWriter = new BarcodeWriter
-        {
-            Format = BarcodeFormat.QR_CODE,
-            Options = new ZXing.Common.EncodingOptions
-            {
-                Height = _size,
-                Width = _size
-            }
-        };
-        using var bitmap = barcodeWriter.Write(_content);
-        using var memoryStream = new MemoryStream();
-        bitmap.Encode(memoryStream, SkiaSharp.SKEncodedImageFormat.Png, 100);
-        var byteImage = memoryStream.ToArray();
-        _base64 = Convert.ToBase64String(byteImage);
-        _image = $"data:image/png;base64,{_base64}";
-        
-        ToastService.ShowSuccess(
-            "QR Code generated... Click on image to download.",
-            3000
-        );
-    }
-    
-    private async Task DownloadQrCodeImage()
-    {
-        var bytes = Convert.FromBase64String(_base64);
-        var fileStream = new MemoryStream(bytes);
-        var fileName = $"qrcode-{DateTime.Now:yyyyMMddhhmmss}.png";
-        using var streamRef = new DotNetStreamReference(stream: fileStream);
-
-        await Js.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
-    }
-}

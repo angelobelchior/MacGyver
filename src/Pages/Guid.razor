@@ -1,7 +1,5 @@
-﻿@page "/guid"
-
-@inject IJSRuntime Js
-@inject IToastService ToastService
+﻿@inherits GuidCodeBehind
+@page "/guid"
 
 <PageTitle>Guid Generator</PageTitle>
 
@@ -10,25 +8,25 @@
 <FluentStack Orientation="Orientation.Vertical">
     
     <FluentStack Orientation="Orientation.Vertical" Style="width: 50%;">
-        <FluentNumberField Style="width: 100%;" @bind-Value="_max" Max="1000" Min="1">
+        <FluentNumberField Style="width: 100%;" @bind-Value="Max" Max="1000" Min="1">
             <FluentLabel>How Many?</FluentLabel>
         </FluentNumberField>
         
         <FluentStack Orientation="Orientation.Horizontal" Style="width: 100%;">
-            <FluentCheckbox @bind-Value="@_hyphens" Label="Hyphens"/>
-            <FluentCheckbox @bind-Value="@_upper" Label="Upper case"/>
-            <FluentCheckbox @bind-Value="@_braces" Label="Braces"/>
+            <FluentCheckbox @bind-Value="@Hyphens" Label="Hyphens"/>
+            <FluentCheckbox @bind-Value="@Upper" Label="Upper case"/>
+            <FluentCheckbox @bind-Value="@Braces" Label="Braces"/>
         </FluentStack>
         
-        <FluentRadioGroup Name="separators" @bind-Value="_quotes">
+        <FluentRadioGroup Name="separators" @bind-Value="Quotes">
             <FluentRadio Value=@(" ")>No Quotes</FluentRadio>
             <FluentRadio Value=@("\"")>Double Quotes</FluentRadio>
             <FluentRadio Value=@("'")>Single Quote</FluentRadio>
         </FluentRadioGroup>
 
-        @if (_max > 1)
+        @if (Max > 1)
         {
-            <FluentRadioGroup Name="separators" @bind-Value="_separator">
+            <FluentRadioGroup Name="separators" @bind-Value="Separator">
                 <FluentRadio Value=@("\n")>New Line</FluentRadio>
                 <FluentRadio Value=@(",")>Commas</FluentRadio>
                 <FluentRadio Value=@(";")>Semicolon</FluentRadio>
@@ -39,12 +37,12 @@
 
         <FluentDivider Style="width: 100%;" Orientation="Orientation.Horizontal" Role="@DividerRole.Separator"/>
 
-        @if (!string.IsNullOrWhiteSpace(_values))
+        @if (!string.IsNullOrWhiteSpace(Values))
         {
             <FluentTextArea Name="textArea" 
                             Rows="10"
                             Style="width: 100%;" 
-                            @bind-Value="_values" 
+                            @bind-Value="Values" 
                             Resize="TextAreaResize.Vertical"
                             ReadOnly="true">
                 <FluentLabel>Values</FluentLabel>
@@ -57,42 +55,3 @@
         }
     </FluentStack>
 </FluentStack>
-
-@code
-{
-    int _max = 1;
-    
-    bool _hyphens = true;
-    bool _upper = false;
-    bool _braces = false;
-    string _quotes = " ";
-    
-    string _separator = "\n";
-    string _values = string.Empty;
-
-    void GenerateGuids()
-    {
-        var items = Enumerable.Range(0, _max)
-                                              .Select(_ => Format(System.Guid.NewGuid().ToString()!));
-        _values = string.Join(_separator, items);
-        return;
-
-        string Format(string value) => Hyphens(Upper(Quotes(Braces(value))));
-        string Quotes(string value) => $"{_quotes}{value}{_quotes}".Trim();
-        string Braces(string value) => _braces ? $"{{{value}}}" : value;
-        string Upper(string value) => _upper ? value.ToUpper() : value;
-        string Hyphens(string value) => _hyphens ? value : value.Replace("-", "");
-    }
-
-    async Task CopyToClipboard()
-    {
-        var result = await Js.InvokeAsync<bool>("copyToClipboard", _values);
-        if (result)
-        {
-            ToastService.ShowSuccess(
-                "Copied to clipboard!",
-                3000
-            );
-        }
-    }
-}

@@ -17,7 +17,9 @@
             <FluentNavMenu @bind-Expanded="_expanded" Width="250" Collapsible="true" Title="Collapsible demo">
                 <FluentNavLink Icon="@(new Icons.Regular.Size20.Home())" Href="/" Match="NavLinkMatch.All">Home</FluentNavLink>
                 <FluentNavLink Icon="@(new Icons.Regular.Size20.QrCode())" Href="qrcode" Match="NavLinkMatch.All">QrCode Generator</FluentNavLink>
-                <FluentNavLink Icon="@(new Icons.Regular.Size20.NumberSymbol())" Href="guid" Match="NavLinkMatch.All">Guid Generator</FluentNavLink></FluentNavMenu>
+                <FluentNavLink Icon="@(new Icons.Regular.Size20.NumberSymbol())" Href="guid" Match="NavLinkMatch.All">Guid Generator</FluentNavLink>
+                <FluentNavLink Icon="@(new Icons.Regular.Size20.Password())" Href="password" Match="NavLinkMatch.All">Password Generator</FluentNavLink>
+            </FluentNavMenu>
         </div>
         <FluentBodyContent Style="padding: 10px">
             @Body
